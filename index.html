@@ -110,6 +110,22 @@ body:has(.aq-root[data-theme="dark"]){ background:#141A24; }
 .aq-btnrow{ display:flex; gap:10px; margin-top:24px; flex-wrap:wrap; }
 .aq-btn-secondary{ font-family:"Helvetica Neue",Arial,sans-serif; background:none; border:1px solid var(--navy); color:var(--navy); padding:10px 18px; font-size:14px; cursor:pointer; }
 .aq-btn-primary{ font-family:"Helvetica Neue",Arial,sans-serif; background:var(--navy-solid); color:#fff; border:none; padding:10px 18px; font-size:14px; cursor:pointer; }
+/* ---- dictionary ---- */
+.aq-dict-tile{ font-family:"Helvetica Neue",Arial,sans-serif; display:block; width:100%; text-align:left; background:var(--card); border:1px solid var(--line); border-left:4px solid var(--navy); padding:14px 16px; cursor:pointer; margin-bottom:10px; }
+.aq-dict-tile:hover{ border-left-color:var(--gold); }
+.aq-dict-tile-name{ font-size:15.5px; font-weight:600; color:var(--navy); }
+.aq-dict-tile-count{ font-size:12.5px; color:var(--muted); margin-top:3px; }
+.aq-search{ font-family:"Helvetica Neue",Arial,sans-serif; width:100%; box-sizing:border-box; padding:11px 14px; font-size:14.5px; border:1px solid var(--line); background:var(--card); color:var(--ink); margin-bottom:16px; }
+.aq-search:focus{ outline:none; border-color:var(--navy); }
+.aq-dict-table{ width:100%; border-collapse:collapse; font-family:"Helvetica Neue",Arial,sans-serif; font-size:14.5px; }
+.aq-dict-table th{ text-align:left; padding:9px 10px; border-bottom:1px solid var(--navy); color:var(--navy); font-size:12.5px; letter-spacing:.02em; }
+.aq-dict-table td{ padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+.aq-dict-table tr.alt td{ background:var(--card-alt); }
+.aq-dict-table .aq-arabic{ font-size:20px; }
+.aq-dict-translit{ font-style:italic; color:var(--gold); font-size:13px; }
+.aq-dict-empty{ text-align:center; color:var(--muted); padding:20px 0; font-family:"Helvetica Neue",Arial,sans-serif; }
+.aq-dict-count{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:12.5px; color:var(--muted); margin-top:12px; text-align:right; }
+.aq-dict-speak{ background:none; border:none; cursor:pointer; color:var(--navy); font-size:15px; padding:0; }
 </style>
 </head>
 <body>
@@ -244,6 +260,136 @@ body:has(.aq-root[data-theme="dark"]){ background:#141A24; }
     `}
   ];
 
+  // ---------- DATA: dictionary (basic vocabulary) ----------
+  // items: [arabic, transliteration, ukrainian]
+  const DICT = [
+    { key:"phrases", label:"Привітання та фрази", items:[
+      ["مرحبا","marḥaban","привіт"],
+      ["السلام عليكم","as-salāmu ʿalaykum","мир вам (привітання)"],
+      ["وعليكم السلام","wa-ʿalaykumu s-salām","і вам мир (відповідь)"],
+      ["صباح الخير","ṣabāḥ al-khayr","доброго ранку"],
+      ["مساء الخير","masāʼ al-khayr","доброго вечора"],
+      ["مع السلامة","maʿa s-salāma","до побачення"],
+      ["إلى اللقاء","ilā l-liqāʼ","до зустрічі"],
+      ["شكرا","shukran","дякую"],
+      ["عفوا","ʿafwan","нема за що / будь ласка"],
+      ["من فضلك","min faḍlik","будь ласка (прохання)"],
+      ["نعم","naʿam","так"],
+      ["لا","lā","ні"],
+      ["آسف","āsif","вибач(те)"],
+      ["كيف حالك","kayfa ḥāluka","як справи?"],
+      ["بخير","bikhayr","добре (у відповідь)"],
+      ["اسمي...","ismī...","мене звати..."],
+      ["ما اسمك؟","mā ismuka؟","як тебе звати?"],
+      ["أين...؟","ayna...؟","де...?"],
+      ["كم؟","kam؟","скільки?"]
+    ]},
+    { key:"family", label:"Люди та сім'я", items:[
+      ["أب","ab","батько"],
+      ["أم","umm","мати"],
+      ["أخ","akh","брат"],
+      ["أخت","ukht","сестра"],
+      ["ابن","ibn","син"],
+      ["ابنة","ibna","дочка"],
+      ["جد","jadd","дідусь"],
+      ["جدة","jadda","бабуся"],
+      ["زوج","zawj","чоловік (у шлюбі)"],
+      ["زوجة","zawja","дружина"],
+      ["عائلة","ʿāʼila","сім'я"],
+      ["صديق","ṣadīq","друг"]
+    ]},
+    { key:"numbers", label:"Числа 0–10", items:[
+      ["صفر","ṣifr","0"],
+      ["واحد","wāḥid","1"],
+      ["اثنان","ithnān","2"],
+      ["ثلاثة","thalātha","3"],
+      ["أربعة","arbaʿa","4"],
+      ["خمسة","khamsa","5"],
+      ["ستة","sitta","6"],
+      ["سبعة","sabʿa","7"],
+      ["ثمانية","thamāniya","8"],
+      ["تسعة","tisʿa","9"],
+      ["عشرة","ʿashara","10"]
+    ]},
+    { key:"colors", label:"Кольори", items:[
+      ["أحمر","aḥmar","червоний"],
+      ["أزرق","azraq","синій"],
+      ["أخضر","akhḍar","зелений"],
+      ["أصفر","aṣfar","жовтий"],
+      ["أسود","aswad","чорний"],
+      ["أبيض","abyaḍ","білий"],
+      ["بني","bunnī","коричневий"],
+      ["رمادي","ramādī","сірий"]
+    ]},
+    { key:"days", label:"Дні тижня", items:[
+      ["الأحد","al-aḥad","неділя"],
+      ["الاثنين","al-ithnayn","понеділок"],
+      ["الثلاثاء","ath-thulāthāʼ","вівторок"],
+      ["الأربعاء","al-arbiʿāʼ","середа"],
+      ["الخميس","al-khamīs","четвер"],
+      ["الجمعة","al-jumʿa","п'ятниця"],
+      ["السبت","as-sabt","субота"]
+    ]},
+    { key:"question", label:"Питальні слова", items:[
+      ["ماذا","mādhā","що"],
+      ["من","man","хто"],
+      ["متى","matā","коли"],
+      ["لماذا","limādhā","чому"],
+      ["كيف","kayfa","як"],
+      ["أين","ayna","де"],
+      ["أي","ayy","який"]
+    ]},
+    { key:"verbs", label:"Основні дієслова", items:[
+      ["كتب","kataba","писати"],
+      ["قرأ","qaraʼa","читати"],
+      ["أكل","akala","їсти"],
+      ["شرب","shariba","пити"],
+      ["ذهب","dhahaba","йти"],
+      ["رجع","rajaʿa","повертатися"],
+      ["عمل","ʿamila","працювати / робити"],
+      ["سكن","sakana","жити (мешкати)"],
+      ["تكلم","takallama","говорити"],
+      ["فهم","fahima","розуміти"],
+      ["أراد","arāda","хотіти"],
+      ["استطاع","istaṭāʿa","могти"],
+      ["عرف","ʿarafa","знати"],
+      ["رأى","raʼā","бачити"],
+      ["سمع","samiʿa","чути"],
+      ["أحب","aḥabba","любити"]
+    ]},
+    { key:"adjectives", label:"Прикметники", items:[
+      ["كبير","kabīr","великий"],
+      ["صغير","ṣaghīr","маленький"],
+      ["جميل","jamīl","гарний"],
+      ["جديد","jadīd","новий"],
+      ["قديم","qadīm","старий"],
+      ["سهل","sahl","легкий"],
+      ["صعب","ṣaʿb","важкий"],
+      ["سريع","sarīʿ","швидкий"],
+      ["بطيء","baṭīʼ","повільний"],
+      ["طويل","ṭawīl","довгий / високий"],
+      ["قصير","qaṣīr","короткий / низький"],
+      ["حار","ḥārr","гарячий"],
+      ["بارد","bārid","холодний"]
+    ]},
+    { key:"food", label:"Їжа та напої", items:[
+      ["خبز","khubz","хліб"],
+      ["ماء","māʼ","вода"],
+      ["شاي","shāy","чай"],
+      ["قهوة","qahwa","кава"],
+      ["حليب","ḥalīb","молоко"],
+      ["سكر","sukkar","цукор"],
+      ["ملح","milḥ","сіль"],
+      ["لحم","laḥm","м'ясо"],
+      ["سمك","samak","риба"],
+      ["دجاج","dajāj","курка"],
+      ["أرز","aruzz","рис"],
+      ["فاكهة","fākiha","фрукт"],
+      ["خضار","khuḍār","овочі"],
+      ["تفاح","tuffāḥ","яблуко"]
+    ]}
+  ];
+
   // ---------- state ----------
   function loadTheme(){ try{ return localStorage.getItem("aqTheme") || "light"; }catch(e){ return "light"; } }
   function saveTheme(v){ try{ localStorage.setItem("aqTheme", v); }catch(e){} }
@@ -261,7 +407,10 @@ body:has(.aq-root[data-theme="dark"]){ background:#141A24; }
     quizScore: 0,
     quizAnswered: false,
     quizMissed: [],
-    quizOptions: []
+    quizOptions: [],
+    dictView: "list", // list | table
+    dictKey: null,
+    dictFilter: ""
   };
 
   const root = document.getElementById("aqRoot");
@@ -297,7 +446,7 @@ body:has(.aq-root[data-theme="dark"]){ background:#141A24; }
 
   function renderTabs(){
     const tabs = document.createElement("div"); tabs.className="aq-tabs";
-    const defs = [["theory","Теорія"],["alphabet","Алфавіт"],["quiz","Практика"]];
+    const defs = [["theory","Теорія"],["alphabet","Алфавіт"],["dict","Словник"],["quiz","Практика"]];
     defs.forEach(([key,label])=>{
       const b = document.createElement("button");
       b.className = "aq-tab" + (state.tab===key ? " active":"");
@@ -306,6 +455,7 @@ body:has(.aq-root[data-theme="dark"]){ background:#141A24; }
         state.tab = key;
         if(key==="theory") state.theoryView="list";
         if(key==="alphabet") state.alphaView="grid";
+        if(key==="dict") { state.dictView="list"; state.dictFilter=""; }
         if(key==="quiz") startQuiz();
         render();
       };
@@ -409,6 +559,66 @@ body:has(.aq-root[data-theme="dark"]){ background:#141A24; }
     next.onclick = ()=>{ state.alphaIndex++; window.scrollTo(0,0); render(); };
     nav.appendChild(prev); nav.appendChild(next);
     root.appendChild(nav);
+  }
+
+  // ---------- DICTIONARY views ----------
+  function renderDictList(){
+    DICT.forEach(cat=>{
+      const tile = document.createElement("button"); tile.className="aq-dict-tile";
+      tile.innerHTML = `<div class="aq-dict-tile-name">${cat.label}</div><div class="aq-dict-tile-count">${cat.items.length} слів</div>`;
+      tile.onclick = ()=>{ state.dictKey = cat.key; state.dictView="table"; state.dictFilter=""; window.scrollTo(0,0); render(); };
+      root.appendChild(tile);
+    });
+  }
+  function renderDictTable(){
+    const cat = DICT.find(c=>c.key===state.dictKey);
+    const back = document.createElement("button"); back.className="aq-back"; back.textContent="← Категорії";
+    back.onclick = ()=>{ state.dictView="list"; render(); };
+    root.appendChild(back);
+
+    const search = document.createElement("input"); search.className="aq-search"; search.type="text";
+    search.placeholder = "Пошук за арабською, транслітерацією чи перекладом...";
+    search.value = state.dictFilter;
+    search.oninput = (e)=>{ state.dictFilter = e.target.value; renderDictTableBody(cat); };
+    root.appendChild(search);
+
+    const body = document.createElement("div"); body.id="aqDictBody";
+    root.appendChild(body);
+    renderDictTableBody(cat);
+  }
+  function renderDictTableBody(cat){
+    const body = document.getElementById("aqDictBody");
+    body.innerHTML = "";
+    const q = state.dictFilter.trim().toLowerCase();
+    const items = cat.items.filter(it=>{
+      if(!q) return true;
+      return it[0].includes(state.dictFilter.trim()) || it[1].toLowerCase().includes(q) || it[2].toLowerCase().includes(q);
+    });
+
+    if(items.length===0){
+      const empty = document.createElement("div"); empty.className="aq-dict-empty"; empty.textContent="Нічого не знайдено.";
+      body.appendChild(empty);
+      return;
+    }
+
+    const table = document.createElement("table"); table.className="aq-dict-table";
+    table.innerHTML = `<tr><th>Арабська</th><th>Транслітерація</th><th>Переклад</th><th></th></tr>`;
+    items.forEach((it,i)=>{
+      const [ar,translit,ua] = it;
+      const row = document.createElement("tr"); if(i%2===1) row.className="alt";
+      row.innerHTML = `
+        <td class="aq-arabic">${ar}</td>
+        <td class="aq-dict-translit">${translit}</td>
+        <td>${ua}</td>
+        <td><button class="aq-dict-speak" title="Прослухати">🔊</button></td>`;
+      row.querySelector(".aq-dict-speak").onclick = ()=>speak(ar, "ar-SA");
+      table.appendChild(row);
+    });
+    body.appendChild(table);
+
+    const count = document.createElement("div"); count.className="aq-dict-count";
+    count.textContent = `${items.length} із ${cat.items.length}`;
+    body.appendChild(count);
   }
 
   // ---------- QUIZ ----------
@@ -549,6 +759,8 @@ body:has(.aq-root[data-theme="dark"]){ background:#141A24; }
       if(state.theoryView==="list") renderTheoryList(); else renderTheoryArticle();
     } else if(state.tab==="alphabet"){
       if(state.alphaView==="grid") renderAlphaGrid(); else renderAlphaDetail();
+    } else if(state.tab==="dict"){
+      if(state.dictView==="list") renderDictList(); else renderDictTable();
     } else if(state.tab==="quiz"){
       if(state.quizQueue.length===0) startQuiz();
       renderQuiz();
