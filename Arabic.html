@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Арабська — алфавіт та основи</title>
+<style>
+html, body{ height:100%; margin:0; }
+body{ background:#FAF6EF; }
+body:has(.aq-root[data-theme="dark"]){ background:#141A24; }
+:root{ --ink:#1F2A38; --paper:#FAF6EF; --card:#FFFFFF; --card-alt:#F2EEE4; --line:#DCD3C0; --navy:#2E4057; --navy-solid:#2E4057; --gold:#B08D2B; --good:#3F7A54; --good-bg:#EEF6F0; --bad:#B0413E; --bad-bg:#FBEEED; --muted:#6B6459; }
+*{box-sizing:border-box;}
+.aq-root{ font-family:"Iowan Old Style","Palatino Linotype",Georgia,"Times New Roman",serif; color:var(--ink); background:var(--paper); padding:64px 18px 60px; max-width:720px; min-height:100vh; margin:0 auto; position:relative; transition:background-color .2s ease, color .2s ease; }
+.aq-root[data-theme="dark"]{ --ink:#E7E1D3; --paper:#141A24; --card:#1E2734; --card-alt:#242F3E; --line:#2C3849; --navy:#6C93C4; --navy-solid:#3E6690; --gold:#E3C567; --good:#5FBE82; --good-bg:#1D3327; --bad:#E2827E; --bad-bg:#3A2323; --muted:#93A1B5; }
+.aq-arabic{ font-family:"Scheherazade New","Traditional Arabic","Amiri","Arial",sans-serif; direction:rtl; unicode-bidi:isolate; }
+.aq-theme-toggle{ position:absolute; top:16px; right:18px; width:34px; height:34px; border-radius:50%; border:1px solid var(--line); background:var(--card); color:var(--ink); font-size:15px; display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0; line-height:1; z-index:5; }
+.aq-theme-toggle:hover{ border-color:var(--gold); }
+.aq-kicker{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:12.5px; letter-spacing:.04em; color:var(--muted); margin:0 0 4px; }
+.aq-title{ font-size:28px; font-weight:600; margin:0 0 22px; color:var(--navy); border-bottom:1px solid var(--line); padding-bottom:16px; }
+.aq-tabs{ display:flex; gap:4px; margin-bottom:22px; font-family:"Helvetica Neue",Arial,sans-serif; flex-wrap:wrap; }
+.aq-tab{ background:none; border:none; border-bottom:2px solid transparent; font-size:14px; padding:8px 4px; margin-right:18px; cursor:pointer; color:var(--muted); }
+.aq-tab.active{ color:var(--navy); border-bottom-color:var(--gold); font-weight:600; }
+.aq-back{ background:none; border:none; color:var(--navy); cursor:pointer; font-size:13px; padding:0; font-family:inherit; text-decoration:underline; margin-bottom:18px; display:inline-block; }
+/* ---- theory ---- */
+.aq-theory-list-item{ font-family:"Helvetica Neue",Arial,sans-serif; display:block; width:100%; text-align:left; background:var(--card); border:1px solid var(--line); border-left:4px solid var(--navy); padding:14px 16px; cursor:pointer; margin-bottom:10px; }
+.aq-theory-list-item:hover{ border-left-color:var(--gold); }
+.aq-theory-list-title{ font-size:15.5px; font-weight:600; color:var(--navy); }
+.aq-theory-list-sub{ font-size:12.5px; color:var(--muted); margin-top:3px; }
+.aq-theory-article h3{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:17px; color:var(--navy); margin:26px 0 10px; }
+.aq-theory-article h3:first-child{ margin-top:0; }
+.aq-theory-article p{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:15px; line-height:1.6; margin:0 0 12px; }
+.aq-theory-article ul{ font-family:"Helvetica Neue",Arial,sans-serif; margin:0 0 14px; padding-left:20px; }
+.aq-theory-article li{ font-size:15px; line-height:1.6; margin-bottom:7px; }
+.aq-ex{ background:var(--card); border-left:3px solid var(--gold); padding:10px 14px; margin:0 0 10px; font-family:"Helvetica Neue",Arial,sans-serif; font-size:14.5px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.aq-ex .aq-arabic{ font-size:22px; color:var(--navy); }
+.aq-ex b{ color:var(--navy); }
+.aq-ex span{ color:var(--muted); font-size:13px; }
+.aq-theory-table{ width:100%; border-collapse:collapse; margin:0 0 18px; font-family:"Helvetica Neue",Arial,sans-serif; font-size:14px; }
+.aq-theory-table th{ background:var(--navy-solid); color:#fff; text-align:left; padding:8px 10px; font-weight:600; }
+.aq-theory-table td{ padding:8px 10px; border-bottom:1px solid var(--line); }
+.aq-theory-table tr:nth-child(even) td{ background:var(--card-alt); }
+.aq-theory-table .aq-arabic{ font-size:19px; }
+.aq-sunmoon-row{ display:flex; gap:6px; flex-wrap:wrap; margin:0 0 16px; }
+.aq-sunmoon-chip{ font-family:"Helvetica Neue",Arial,sans-serif; background:var(--card); border:1px solid var(--line); padding:8px 10px; text-align:center; min-width:44px; }
+.aq-sunmoon-chip .aq-arabic{ font-size:20px; display:block; }
+.aq-sunmoon-chip small{ display:block; color:var(--muted); font-size:11px; margin-top:2px; }
+.aq-sunmoon-chip.sun{ border-top:3px solid var(--gold); }
+.aq-sunmoon-chip.moon{ border-top:3px solid var(--navy-solid); }
+/* ---- alphabet grid ---- */
+.aq-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+@media (max-width:560px){ .aq-grid{ grid-template-columns:repeat(3,1fr); } }
+@media (max-width:400px){ .aq-grid{ grid-template-columns:repeat(2,1fr); } }
+.aq-tile{ font-family:"Helvetica Neue",Arial,sans-serif; text-align:center; background:var(--card); border:1px solid var(--line); border-top:3px solid var(--navy); padding:14px 6px 10px; cursor:pointer; }
+.aq-tile:hover{ border-top-color:var(--gold); }
+.aq-tile .aq-arabic{ font-size:30px; line-height:1; color:var(--ink); }
+.aq-tile-translit{ font-size:12px; color:var(--muted); margin-top:6px; }
+.aq-tile-sound{ font-size:11px; color:var(--gold); margin-top:2px; }
+/* ---- letter detail ---- */
+.aq-detail-head{ display:flex; align-items:center; gap:20px; margin-bottom:22px; flex-wrap:wrap; }
+.aq-detail-glyph{ font-size:64px; line-height:1; color:var(--navy); }
+.aq-detail-name{ font-family:"Helvetica Neue",Arial,sans-serif; }
+.aq-detail-name-ar{ font-size:22px; }
+.aq-detail-name-lat{ font-size:14px; color:var(--muted); margin-top:4px; }
+.aq-detail-name-ua{ font-size:14px; color:var(--muted); }
+.aq-forms-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px; }
+@media (max-width:480px){ .aq-forms-grid{ grid-template-columns:repeat(2,1fr); } }
+.aq-form-card{ font-family:"Helvetica Neue",Arial,sans-serif; text-align:center; background:var(--card); border:1px solid var(--line); padding:14px 6px; }
+.aq-form-card .aq-arabic{ font-size:30px; display:block; margin-bottom:6px; }
+.aq-form-label{ font-size:11.5px; color:var(--muted); }
+.aq-form-card-disabled{ opacity:.4; }
+.aq-detail-note{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:13.5px; color:var(--muted); margin-bottom:18px; line-height:1.5; }
+.aq-example{ font-family:"Helvetica Neue",Arial,sans-serif; background:var(--card); border-left:4px solid var(--gold); padding:14px 16px; margin-bottom:16px; }
+.aq-example .aq-arabic{ font-size:26px; color:var(--navy); margin-bottom:4px; }
+.aq-example-translit{ font-style:italic; color:var(--gold); font-size:13.5px; }
+.aq-example-ua{ font-size:14px; color:var(--ink); margin-top:2px; }
+.aq-speak{ font-family:"Helvetica Neue",Arial,sans-serif; display:inline-flex; align-items:center; gap:7px; background:var(--card); border:1px solid var(--navy); color:var(--navy); padding:8px 14px; font-size:13.5px; cursor:pointer; margin-top:4px; }
+.aq-speak:hover{ background:var(--navy-solid); color:#fff; }
+.aq-detail-nav{ display:flex; justify-content:space-between; margin-top:22px; font-family:"Helvetica Neue",Arial,sans-serif; }
+.aq-detail-navbtn{ background:none; border:1px solid var(--line); color:var(--ink); padding:9px 14px; font-size:13.5px; cursor:pointer; }
+.aq-detail-navbtn:hover{ border-color:var(--gold); }
+/* ---- quiz ---- */
+.aq-qtypes{ display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; font-family:"Helvetica Neue",Arial,sans-serif; }
+.aq-qtypebtn{ flex:1 1 140px; text-align:center; padding:11px 10px; font-size:13px; border:1px solid var(--line); background:var(--card); color:var(--muted); cursor:pointer; }
+.aq-qtypebtn.active{ border-color:var(--navy-solid); background:var(--navy-solid); color:#fff; font-weight:600; }
+.aq-topbar{ font-family:"Helvetica Neue",Arial,sans-serif; display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--muted); margin-bottom:10px; }
+.aq-progressbar{ height:3px; background:var(--line); margin-bottom:26px; position:relative; }
+.aq-progressbar-fill{ height:3px; background:var(--gold); transition:width .25s ease; }
+.aq-prompt-label{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:12.5px; color:var(--muted); margin-bottom:10px; }
+.aq-prompt{ font-size:52px; line-height:1.2; margin:0 0 28px; color:var(--ink); text-align:center; }
+.aq-prompt-text{ font-size:26px; line-height:1.3; margin:0 0 28px; color:var(--ink); }
+.aq-options{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px; }
+@media (max-width:480px){ .aq-options{ grid-template-columns:1fr; } }
+.aq-opt{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:16px; text-align:left; background:var(--card); border:1px solid var(--line); padding:13px 14px; cursor:pointer; color:var(--ink); }
+.aq-opt .aq-arabic{ font-size:24px; }
+.aq-opt:hover{ border-color:var(--navy); }
+.aq-opt.correct{ border-color:var(--good); background:var(--good-bg); color:var(--good); font-weight:600; }
+.aq-opt.wrong{ border-color:var(--bad); background:var(--bad-bg); color:var(--bad); font-weight:600; }
+.aq-opt:disabled{ cursor:default; }
+.aq-hint{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:13px; color:var(--muted); min-height:20px; margin-bottom:6px; }
+.aq-hint i{ color:var(--gold); font-style:normal; }
+.aq-nextbar{ display:flex; justify-content:flex-end; margin-top:16px; }
+.aq-next{ font-family:"Helvetica Neue",Arial,sans-serif; background:var(--navy-solid); color:#fff; border:none; padding:11px 22px; font-size:14px; cursor:pointer; }
+.aq-next:disabled{ opacity:.35; cursor:default; }
+.aq-summary-score{ font-size:44px; color:var(--navy); margin:6px 0 4px; }
+.aq-summary-sub{ font-family:"Helvetica Neue",Arial,sans-serif; color:var(--muted); font-size:14px; margin-bottom:22px; }
+.aq-missed-title{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:13px; color:var(--muted); margin:22px 0 10px; }
+.aq-missed-item{ font-family:"Helvetica Neue",Arial,sans-serif; display:flex; justify-content:space-between; align-items:center; font-size:14.5px; padding:9px 0; border-bottom:1px solid var(--line); gap:10px; }
+.aq-missed-item .aq-arabic{ font-size:20px; }
+.aq-missed-ua{ color:var(--muted); text-align:right; }
+.aq-btnrow{ display:flex; gap:10px; margin-top:24px; flex-wrap:wrap; }
+.aq-btn-secondary{ font-family:"Helvetica Neue",Arial,sans-serif; background:none; border:1px solid var(--navy); color:var(--navy); padding:10px 18px; font-size:14px; cursor:pointer; }
+.aq-btn-primary{ font-family:"Helvetica Neue",Arial,sans-serif; background:var(--navy-solid); color:#fff; border:none; padding:10px 18px; font-size:14px; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<div class="aq-root" id="aqRoot"></div>
+
+<script>(function(){
+
+  // ---------- DATA: 28 letters of the Arabic alphabet ----------
+  // [isolated, name_ar, name_translit, name_ua, sound_ua, connects(bool), example_ar, example_translit, example_ua]
+  const LETTERS = [
+    ["ا","أَلِف","alif","аліф","довге «а»; на початку слова часто із хамзою — різкий гортанний приступ",false,"باب","bāb","двері"],
+    ["ب","باء","bāʼ","ба","як українське «б»",true,"باب","bāb","двері"],
+    ["ت","تاء","tāʼ","та","як українське «т»",true,"تفاح","tuffāḥ","яблуко"],
+    ["ث","ثاء","thāʼ","са","глухий міжзубний, схожий на англ. th у «think»; наближено — «с»",true,"ثعلب","thaʿlab","лисиця"],
+    ["ج","جيم","jīm","джим","як «дж» (у деяких діалектах — «г»)",true,"جمل","jamal","верблюд"],
+    ["ح","حاء","ḥāʼ","ха (глибоке)","глухий гортанний видих, глибше і різкіше за звичайне «х»; звук утворюється в горлі",true,"حليب","ḥalīb","молоко"],
+    ["خ","خاء","khāʼ","ха (гортанне)","як українське «х», але твердіше, з горла",true,"خبز","khubz","хліб"],
+    ["د","دال","dāl","даль","як українське «д»",false,"دار","dār","будинок"],
+    ["ذ","ذال","dhāl","заль","дзвінкий міжзубний, як англ. th у «this»; наближено — «з»",false,"ذهب","dhahab","золото"],
+    ["ر","راء","rāʼ","ра","розкотисте «р», як в іспанській",false,"رجل","rajul","чоловік"],
+    ["ز","زاي","zāy","зай","як українське «з»",false,"زيت","zayt","олія"],
+    ["س","سين","sīn","сін","як українське «с»",true,"سمك","samak","риба"],
+    ["ش","شين","shīn","шін","як українське «ш»",true,"شمس","shams","сонце"],
+    ["ص","صاد","ṣād","сад (тверде)","«емфатичне» — тверде, напружене «с» із відтягнутою назад спинкою язика",true,"صديق","ṣadīq","друг"],
+    ["ض","ضاد","ḍād","дад (тверде)","«емфатичне» тверде «д»; звук, що вважається особливо характерним для арабської",true,"ضوء","ḍawʼ","світло"],
+    ["ط","طاء","ṭāʼ","та (тверде)","«емфатичне» тверде «т»",true,"طائر","ṭāʼir","птах"],
+    ["ظ","ظاء","ẓāʼ","за (тверде)","«емфатичний» твердий варіант ذ",true,"ظل","ẓill","тінь"],
+    ["ع","عين","ʿayn","айн","дзвінкий гортанний звук без аналогів в українській; утворюється стисканням горла",true,"عين","ʿayn","око"],
+    ["غ","غين","ghayn","гайн","гортанне «р/г», подібне до французького картавого «р»",true,"غزال","ghazāl","газель"],
+    ["ف","فاء","fāʼ","фа","як українське «ф»",true,"فيل","fīl","слон"],
+    ["ق","قاف","qāf","каф (глибоке)","глибоке «к», що вимовляється в самому горлі (язичкове)",true,"قلم","qalam","ручка"],
+    ["ك","كاف","kāf","каф","як українське «к»",true,"كتاب","kitāb","книга"],
+    ["ل","لام","lām","лям","як українське «л»",true,"ليمون","laymūn","лимон"],
+    ["م","ميم","mīm","мім","як українське «м»",true,"ماء","māʼ","вода"],
+    ["ن","نون","nūn","нун","як українське «н»",true,"نجمة","najma","зірка"],
+    ["ه","هاء","hāʼ","ха (легке)","легкий видих, як англійське «h» у «house»",true,"هدية","hadiyya","подарунок"],
+    ["و","واو","wāw","вав","приголосне «в/w», а також довге «у»",false,"وردة","warda","троянда"],
+    ["ي","ياء","yāʼ","я (йа)","приголосне «й/y», а також довге «і»",true,"يد","yad","рука"]
+  ];
+
+  // ---------- DATA: theory articles ----------
+  const THEORY = [
+    { key:"writing", title:"Як влаштоване арабське письмо", html:`
+      <h3>Напрямок письма</h3>
+      <p>Арабську пишуть і читають <b>справа наліво</b>. Це стосується і букв, і цілих рядків, і навіть чисел усередині тексту (самі числа при цьому записуються зліва направо, як і в українській).</p>
+      <h3>Це «абджад», а не алфавіт у звичному сенсі</h3>
+      <p>Арабське письмо історично передає перш за все <b>приголосні</b>. Короткі голосні (наші «а», «і», «у») зазвичай на письмі не позначаються окремими буквами — їх або взагалі не пишуть, або показують невеликими значками над чи під літерою (про це — в окремій темі про голосні). Носії мови читають слова без цих значків, спираючись на контекст і знання граматики — так само, як досвідчений читач українською легко розбере слово навіть з одруківкою.</p>
+      <h3>Літери з'єднуються між собою</h3>
+      <p>Арабське письмо — курсивне: більшість літер у слові пишуться злитно, «під один розчерк», і форма літери трохи змінюється залежно від того, чи стоїть вона на початку, в середині чи в кінці слова. Це не окремі букви, які просто зручно з'єднати — форма справді інша. Детальніше — у наступній темі.</p>
+      <h3>Немає великих і малих літер</h3>
+      <p>На відміну від української чи французької, в арабській письмі немає поняття «великої літери» для імен чи початку речення. Усі літери — одного «регістру».</p>
+      <h3>28 основних літер</h3>
+      <p>Арабський алфавіт складається з 28 літер. Усі вони позначають приголосні звуки (три літери — ا, و, ي — додатково використовуються для запису довгих голосних). Повний перелік із формами та прикладами — у вкладці «Алфавіт».</p>
+    `},
+    { key:"forms", title:"Чотири форми кожної літери", html:`
+      <p>Оскільки літери в слові з'єднуються між собою, майже кожна літера має <b>чотири форми написання</b> залежно від позиції:</p>
+      <ul>
+        <li><b>Ізольована</b> — коли літера стоїть сама по собі (не в складі слова).</li>
+        <li><b>Початкова</b> — на початку слова, з'єднується з наступною літерою.</li>
+        <li><b>Серединна</b> — усередині слова, з'єднується з обох боків.</li>
+        <li><b>Кінцева</b> — у кінці слова, з'єднується лише з попередньою літерою.</li>
+      </ul>
+      <p>Наприклад, літера <b>ب</b> («ба»):</p>
+      <table class="aq-theory-table">
+        <tr><th>Ізольована</th><th>Початкова</th><th>Серединна</th><th>Кінцева</th></tr>
+        <tr><td class="aq-arabic">ب</td><td class="aq-arabic">بـ</td><td class="aq-arabic">ـبـ</td><td class="aq-arabic">ـب</td></tr>
+      </table>
+      <h3>«Літери, що не з'єднуються наперед»</h3>
+      <p>Шість літер — <b class="aq-arabic">ا د ذ ر ز و</b> — приєднуються лише з попередньою літерою, але ніколи не з'єднуються з наступною. Через це в слові після такої літери завжди починається наче «нове» з'єднання. У таких літер фактично лише дві форми — ізольована і кінцева (вони виглядають однаково), і немає окремих початкової/серединної форм.</p>
+      <p>Це не потрібно спеціально запам'ятовувати наперед — під час проходження алфавіту в наступній вкладці ви природно звикнете, які літери «не з'єднуються далі».</p>
+    `},
+    { key:"vowels", title:"Голосні: харакати та довгі голосні", html:`
+      <h3>Короткі голосні — значки над і під літерою</h3>
+      <p>Три короткі голосні позначаються не літерами, а маленькими знаками (харакат), які ставлять над або під приголосною:</p>
+      <table class="aq-theory-table">
+        <tr><th>Значок</th><th>Назва</th><th>Звук</th><th>Приклад</th></tr>
+        <tr><td class="aq-arabic">بَ</td><td>фатха</td><td>коротке «а»</td><td class="aq-arabic">كَتَبَ — «kataba» (він написав)</td></tr>
+        <tr><td class="aq-arabic">بِ</td><td>кясра</td><td>коротке «і»</td><td class="aq-arabic">مِن — «min» (від)</td></tr>
+        <tr><td class="aq-arabic">بُ</td><td>дамма</td><td>коротке «у»</td><td class="aq-arabic">هُوَ — «huwa» (він)</td></tr>
+        <tr><td class="aq-arabic">بْ</td><td>сукун</td><td>відсутність голосного</td><td class="aq-arabic">بَيْت — «bayt» (дім)</td></tr>
+        <tr><td class="aq-arabic">بّ</td><td>шадда</td><td>подвоєння приголосного</td><td class="aq-arabic">مُدَرِّس — «mudarris» (вчитель)</td></tr>
+      </table>
+      <p>У звичайних текстах — газетах, книгах, вивісках — ці значки майже ніколи не пишуть: досвідчений читач сам розуміє потрібні голосні з контексту. Їх пишуть переважно в Корані, підручниках для початківців і дитячих книжках — тобто саме там, де вони зараз вам і трапляються.</p>
+      <h3>Довгі голосні — це вже окремі літери</h3>
+      <p>На відміну від коротких, довгі голосні («ā», «ī», «ū») позначаються повноцінними літерами алфавіту:</p>
+      <ul>
+        <li><b class="aq-arabic">ا</b> після фатхи дає довге «а»: <span class="aq-arabic">كَتَابٌ</span> — «kitāb» (книга)</li>
+        <li><b class="aq-arabic">و</b> після дамми дає довге «у»: <span class="aq-arabic">نُور</span> — «nūr» (світло)</li>
+        <li><b class="aq-arabic">ي</b> після кясри дає довге «і»: <span class="aq-arabic">كَبِير</span> — «kabīr» (великий)</li>
+      </ul>
+      <h3>Танвін — невизначеність</h3>
+      <p>Подвоєний значок голосного в кінці слова (танвін) додає звук «н» і означає невизначеність іменника (щось на зразок артикля «a/an» в англійській): <span class="aq-arabic">كِتَابٌ</span> — «kitābun» (якась книга).</p>
+    `},
+    { key:"sunmoon", title:"Сонячні та місячні літери", html:`
+      <p>Означений артикль в арабській — це префікс <b class="aq-arabic">ال</b> («аль»), який пишеться злитно з наступним словом. Але вимовляється він по-різному залежно від першої літери слова.</p>
+      <h3>Місячні літери — «аль» вимовляється чітко</h3>
+      <p>Якщо слово починається на одну з 14 «місячних» літер, «л» в артиклі вимовляється як є:</p>
+      <div class="aq-sunmoon-row">
+        ${["ا","ب","ج","ح","خ","ع","غ","ف","ق","ك","م","ه","و","ي"].map(l=>`<div class="aq-sunmoon-chip moon"><span class="aq-arabic">${l}</span><small>місячна</small></div>`).join("")}
+      </div>
+      <p class="aq-ex"><span class="aq-arabic">القَمَر</span> — «al-qamar» (місяць) — «л» чути виразно.</p>
+      <h3>Сонячні літери — «л» уподібнюється</h3>
+      <p>Якщо ж слово починається на одну з 14 «сонячних» літер, «л» з артикля не вимовляється взагалі — натомість подвоюється перша літера самого слова:</p>
+      <div class="aq-sunmoon-row">
+        ${["ت","ث","د","ذ","ر","ز","س","ش","ص","ض","ط","ظ","ل","ن"].map(l=>`<div class="aq-sunmoon-chip sun"><span class="aq-arabic">${l}</span><small>сонячна</small></div>`).join("")}
+      </div>
+      <p class="aq-ex"><span class="aq-arabic">الشَّمس</span> — «ash-shams» (сонце) — «л» зникає, а «ш» подвоюється.</p>
+      <p>На письмі артикль <b class="aq-arabic">ال</b> виглядає однаково в обох випадках — різниця тільки у вимові. Це пояснює, звідки походить сама назва правила: «сонце» арабською — سмة (шамс) — сонячна літера, а «місяць» — قمر (камар) — місячна.</p>
+    `},
+    { key:"signs", title:"Хамза, та-марбута та інші знаки", html:`
+      <h3>Хамза (ء) — гортанний приступ</h3>
+      <p>Хамза позначає різку зупинку голосу (як у слові «пів-острів» на стику частин). Вона не входить у 28 основних літер, але пишеться дуже часто — сама по собі або на «підставці»: <span class="aq-arabic">أ إ ؤ ئ ء</span>. На початку слова хамза майже завжди супроводжує аліф.</p>
+      <h3>Та-марбута (ة) — жіночий рід</h3>
+      <p>Це особливий варіант літери <b class="aq-arabic">ت</b>, який пишеться в кінці слова і зазвичай сигналізує жіночий рід іменника чи прикметника. Читається як коротке «а» в кінці слова, або як «т», якщо після нього йде ще одне слово в тісному словосполученні.</p>
+      <p class="aq-ex"><span class="aq-arabic">مُدَرِّسة</span> — «mudarrisa» — «вчителька» <span>(порівняйте з مُدَرِّس — «mudarris», «вчитель»)</span></p>
+      <h3>Аліф-максура (ى)</h3>
+      <p>Виглядає як <b class="aq-arabic">ي</b> без крапок і зустрічається в кінці деяких слів, де читається як довге «а» (так само, як звичайний <b class="aq-arabic">ا</b>).</p>
+      <h3>Лям-аліф (لا)</h3>
+      <p>Коли <b class="aq-arabic">ل</b> і <b class="aq-arabic">ا</b> стоять поруч, вони обов'язково пишуться як одна злита лігатура: <span class="aq-arabic" style="font-size:22px;">لا</span>. Це не окрема буква, а просто обов'язкове написання цих двох літер разом.</p>
+    `},
+    { key:"numbers", title:"Арабські цифри", html:`
+      <p>У більшості арабських країн (окрім Магрибу) для повсякденного письма використовують не «наші» цифри, а східноарабські (їх, до речі, називають «арабськими цифрами» — саме вони й лягли в основу знайомих нам 0–9 багато століть тому):</p>
+      <table class="aq-theory-table">
+        <tr><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th></tr>
+        <tr>
+          <td class="aq-arabic">٠</td><td class="aq-arabic">١</td><td class="aq-arabic">٢</td><td class="aq-arabic">٣</td><td class="aq-arabic">٤</td>
+          <td class="aq-arabic">٥</td><td class="aq-arabic">٦</td><td class="aq-arabic">٧</td><td class="aq-arabic">٨</td><td class="aq-arabic">٩</td>
+        </tr>
+      </table>
+      <p>Важлива деталь: багатозначні числа, записані цими цифрами, все одно читаються і пишуться <b>зліва направо</b>, навіть усередині тексту, що йде справа наліво.</p>
+    `}
+  ];
+
+  // ---------- state ----------
+  function loadTheme(){ try{ return localStorage.getItem("aqTheme") || "light"; }catch(e){ return "light"; } }
+  function saveTheme(v){ try{ localStorage.setItem("aqTheme", v); }catch(e){} }
+
+  const state = {
+    theme: loadTheme(),
+    tab: "theory", // theory | alphabet | quiz
+    theoryView: "list", // list | article
+    theoryKey: null,
+    alphaView: "grid", // grid | detail
+    alphaIndex: 0,
+    quizType: "letterToName", // letterToName | nameToLetter
+    quizQueue: [],
+    quizIndex: 0,
+    quizScore: 0,
+    quizAnswered: false,
+    quizMissed: [],
+    quizOptions: []
+  };
+
+  const root = document.getElementById("aqRoot");
+
+  function shuffled(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+  function pickOptions(correctIdx, n){
+    const pool = LETTERS.map((_,i)=>i).filter(i=>i!==correctIdx);
+    const wrong = shuffled(pool).slice(0, n-1);
+    return shuffled([correctIdx, ...wrong]);
+  }
+  function speak(text, lang){
+    if(!("speechSynthesis" in window) || !text) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang || "ar-SA";
+    u.rate = 0.85;
+    window.speechSynthesis.speak(u);
+  }
+
+  function renderThemeToggle(){
+    const btn = document.createElement("button");
+    btn.className = "aq-theme-toggle";
+    btn.textContent = state.theme === "dark" ? "☀" : "☾";
+    btn.onclick = ()=>{ state.theme = state.theme === "dark" ? "light" : "dark"; saveTheme(state.theme); render(); };
+    root.appendChild(btn);
+  }
+
+  function renderHeader(){
+    const kicker = document.createElement("div"); kicker.className="aq-kicker"; kicker.textContent="ARABIC · العربية";
+    const title = document.createElement("div"); title.className="aq-title"; title.textContent="Арабська — алфавіт та основи";
+    root.appendChild(kicker); root.appendChild(title);
+  }
+
+  function renderTabs(){
+    const tabs = document.createElement("div"); tabs.className="aq-tabs";
+    const defs = [["theory","Теорія"],["alphabet","Алфавіт"],["quiz","Практика"]];
+    defs.forEach(([key,label])=>{
+      const b = document.createElement("button");
+      b.className = "aq-tab" + (state.tab===key ? " active":"");
+      b.textContent = label;
+      b.onclick = ()=>{
+        state.tab = key;
+        if(key==="theory") state.theoryView="list";
+        if(key==="alphabet") state.alphaView="grid";
+        if(key==="quiz") startQuiz();
+        render();
+      };
+      tabs.appendChild(b);
+    });
+    root.appendChild(tabs);
+  }
+
+  // ---------- THEORY views ----------
+  function renderTheoryList(){
+    THEORY.forEach(t=>{
+      const item = document.createElement("button");
+      item.className = "aq-theory-list-item";
+      item.innerHTML = `<div class="aq-theory-list-title">${t.title}</div>`;
+      item.onclick = ()=>{ state.theoryKey = t.key; state.theoryView="article"; window.scrollTo(0,0); render(); };
+      root.appendChild(item);
+    });
+  }
+  function renderTheoryArticle(){
+    const t = THEORY.find(x=>x.key===state.theoryKey);
+    const back = document.createElement("button"); back.className="aq-back"; back.textContent="← Теми";
+    back.onclick = ()=>{ state.theoryView="list"; render(); };
+    root.appendChild(back);
+    const art = document.createElement("div"); art.className="aq-theory-article";
+    art.innerHTML = `<h3 style="margin-top:0;">${t.title}</h3>` + t.html;
+    root.appendChild(art);
+  }
+
+  // ---------- ALPHABET views ----------
+  function renderAlphaGrid(){
+    const grid = document.createElement("div"); grid.className="aq-grid";
+    LETTERS.forEach((l,i)=>{
+      const tile = document.createElement("button"); tile.className="aq-tile";
+      tile.innerHTML = `<div class="aq-arabic">${l[0]}</div><div class="aq-tile-translit">${l[2]}</div>`;
+      tile.onclick = ()=>{ state.alphaIndex=i; state.alphaView="detail"; window.scrollTo(0,0); render(); };
+      grid.appendChild(tile);
+    });
+    root.appendChild(grid);
+  }
+  function formsMarkup(l){
+    const [iso,,,,,connects] = l;
+    const initial = connects ? iso+"ـ" : iso;
+    const medial = connects ? "ـ"+iso+"ـ" : iso;
+    const final = "ـ"+iso;
+    const cards = [
+      ["Ізольована", iso, true],
+      ["Початкова", initial, connects],
+      ["Серединна", medial, connects],
+      ["Кінцева", final, true]
+    ];
+    return cards.map(([label,glyph,active])=>`
+      <div class="aq-form-card${active?"":" aq-form-card-disabled"}">
+        <span class="aq-arabic">${glyph}</span>
+        <div class="aq-form-label">${label}</div>
+      </div>`).join("");
+  }
+  function renderAlphaDetail(){
+    const l = LETTERS[state.alphaIndex];
+    const [iso,nameAr,nameLat,nameUa,soundUa,connects,exAr,exLat,exUa] = l;
+    const back = document.createElement("button"); back.className="aq-back"; back.textContent="← Усі літери";
+    back.onclick = ()=>{ state.alphaView="grid"; render(); };
+    root.appendChild(back);
+
+    const head = document.createElement("div"); head.className="aq-detail-head";
+    head.innerHTML = `
+      <div class="aq-detail-glyph aq-arabic">${iso}</div>
+      <div class="aq-detail-name">
+        <div class="aq-detail-name-ar aq-arabic">${nameAr}</div>
+        <div class="aq-detail-name-lat">${nameLat} · «${nameUa}»</div>
+        <div class="aq-detail-name-ua">${soundUa}</div>
+      </div>`;
+    root.appendChild(head);
+
+    if(!connects){
+      const note = document.createElement("div"); note.className="aq-detail-note";
+      note.textContent = "Ця літера не з'єднується з наступною — тільки з попередньою. Тому в неї фактично дві форми: ізольована та кінцева (вони виглядають однаково).";
+      root.appendChild(note);
+    }
+
+    const formsGrid = document.createElement("div"); formsGrid.className="aq-forms-grid";
+    formsGrid.innerHTML = formsMarkup(l);
+    root.appendChild(formsGrid);
+
+    const ex = document.createElement("div"); ex.className="aq-example";
+    ex.innerHTML = `
+      <div class="aq-arabic">${exAr}</div>
+      <div class="aq-example-translit">${exLat}</div>
+      <div class="aq-example-ua">${exUa}</div>`;
+    root.appendChild(ex);
+
+    const speakBtn = document.createElement("button"); speakBtn.className="aq-speak"; speakBtn.textContent="🔊 Прослухати";
+    speakBtn.onclick = ()=>speak(exAr, "ar-SA");
+    root.appendChild(speakBtn);
+
+    const nav = document.createElement("div"); nav.className="aq-detail-nav";
+    const prev = document.createElement("button"); prev.className="aq-detail-navbtn"; prev.textContent="← Попередня";
+    prev.disabled = state.alphaIndex===0;
+    prev.onclick = ()=>{ state.alphaIndex--; window.scrollTo(0,0); render(); };
+    const next = document.createElement("button"); next.className="aq-detail-navbtn"; next.textContent="Наступна →";
+    next.disabled = state.alphaIndex===LETTERS.length-1;
+    next.onclick = ()=>{ state.alphaIndex++; window.scrollTo(0,0); render(); };
+    nav.appendChild(prev); nav.appendChild(next);
+    root.appendChild(nav);
+  }
+
+  // ---------- QUIZ ----------
+  function startQuiz(){
+    state.quizQueue = shuffled(LETTERS.map((_,i)=>i));
+    state.quizIndex = 0;
+    state.quizScore = 0;
+    state.quizAnswered = false;
+    state.quizMissed = [];
+    state.tab = "quiz";
+  }
+  function renderQtypes(){
+    const wrap = document.createElement("div"); wrap.className="aq-qtypes";
+    const defs = [
+      ["letterToName","Бачу літеру → обираю назву"],
+      ["nameToLetter","Бачу назву → обираю літеру"]
+    ];
+    defs.forEach(([key,label])=>{
+      const b = document.createElement("button");
+      b.className = "aq-qtypebtn" + (state.quizType===key?" active":"");
+      b.textContent = label;
+      b.onclick = ()=>{ state.quizType = key; startQuiz(); render(); };
+      wrap.appendChild(b);
+    });
+    root.appendChild(wrap);
+  }
+  function renderQuiz(){
+    renderQtypes();
+    if(state.quizIndex >= state.quizQueue.length){ renderQuizSummary(); return; }
+
+    const topbar = document.createElement("div"); topbar.className="aq-topbar";
+    topbar.innerHTML = `<span>${state.quizIndex+1} / ${state.quizQueue.length}</span><span>Рахунок: ${state.quizScore}</span>`;
+    root.appendChild(topbar);
+
+    const pbar = document.createElement("div"); pbar.className="aq-progressbar";
+    const fill = document.createElement("div"); fill.className="aq-progressbar-fill";
+    fill.style.width = Math.round((state.quizIndex/state.quizQueue.length)*100)+"%";
+    pbar.appendChild(fill); root.appendChild(pbar);
+
+    const correctIdx = state.quizQueue[state.quizIndex];
+    const l = LETTERS[correctIdx];
+    if(!state.quizAnswered || state.quizOptions.length===0){
+      state.quizOptions = pickOptions(correctIdx, 4);
+    }
+
+    const label = document.createElement("div"); label.className="aq-prompt-label";
+    label.textContent = state.quizType==="letterToName" ? "Яка це літера?" : "Яка літера так називається?";
+    root.appendChild(label);
+
+    if(state.quizType==="letterToName"){
+      const prompt = document.createElement("div"); prompt.className="aq-prompt aq-arabic"; prompt.textContent = l[0];
+      root.appendChild(prompt);
+    } else {
+      const prompt = document.createElement("div"); prompt.className="aq-prompt-text"; prompt.textContent = `${l[2]} («${l[3]}»)`;
+      root.appendChild(prompt);
+    }
+
+    const opts = document.createElement("div"); opts.className="aq-options";
+    const hint = document.createElement("div"); hint.className="aq-hint";
+
+    state.quizOptions.forEach(optIdx=>{
+      const opt = LETTERS[optIdx];
+      const btn = document.createElement("button"); btn.className="aq-opt";
+      btn.innerHTML = state.quizType==="letterToName"
+        ? `${opt[2]} («${opt[3]}»)`
+        : `<span class="aq-arabic">${opt[0]}</span>`;
+      btn.disabled = state.quizAnswered;
+      if(state.quizAnswered && optIdx===correctIdx) btn.classList.add("correct");
+      btn.onclick = ()=>{
+        if(state.quizAnswered) return;
+        state.quizAnswered = true;
+        if(optIdx===correctIdx){
+          state.quizScore++;
+          btn.classList.add("correct");
+          hint.innerHTML = `<p class="aq-hint-correct" style="color:var(--good); font-weight:600;">Правильно!</p>`;
+        } else {
+          btn.classList.add("wrong");
+          state.quizMissed.push(correctIdx);
+          hint.innerHTML = `<p>Правильна відповідь: <i>${l[2]} («${l[3]}»)</i></p>`;
+        }
+        render();
+      };
+      opts.appendChild(btn);
+    });
+    root.appendChild(opts);
+    root.appendChild(hint);
+
+    if(state.quizAnswered && state.quizType==="letterToName"){
+      const speakBtn = document.createElement("button"); speakBtn.className="aq-speak"; speakBtn.textContent="🔊 Приклад слова";
+      speakBtn.onclick = ()=>speak(l[6], "ar-SA");
+      root.appendChild(speakBtn);
+    }
+
+    const nextbar = document.createElement("div"); nextbar.className="aq-nextbar";
+    const next = document.createElement("button"); next.className="aq-next"; next.textContent = state.quizIndex+1 < state.quizQueue.length ? "Далі" : "Завершити";
+    next.disabled = !state.quizAnswered;
+    next.onclick = ()=>{ state.quizIndex++; state.quizAnswered=false; state.quizOptions=[]; render(); };
+    nextbar.appendChild(next); root.appendChild(nextbar);
+  }
+  function renderQuizSummary(){
+    const total = state.quizQueue.length;
+    const score = document.createElement("div"); score.className="aq-summary-score"; score.textContent = `${state.quizScore} / ${total}`;
+    root.appendChild(score);
+    const sub = document.createElement("div"); sub.className="aq-summary-sub";
+    sub.textContent = state.quizScore===total ? "Усі 28 літер — без помилок!" : "Продовжуйте практикуватися — з кожним разом буде легше.";
+    root.appendChild(sub);
+
+    if(state.quizMissed.length){
+      const mt = document.createElement("div"); mt.className="aq-missed-title"; mt.textContent="Варто повторити:";
+      root.appendChild(mt);
+      const seen = new Set();
+      state.quizMissed.forEach(idx=>{
+        if(seen.has(idx)) return; seen.add(idx);
+        const l = LETTERS[idx];
+        const row = document.createElement("div"); row.className="aq-missed-item";
+        row.innerHTML = `<span class="aq-arabic">${l[0]}</span><span>${l[2]}</span><span class="aq-missed-ua">${l[3]}</span>`;
+        root.appendChild(row);
+      });
+    }
+
+    const btnrow = document.createElement("div"); btnrow.className="aq-btnrow";
+    const again = document.createElement("button"); again.className="aq-btn-primary"; again.textContent="Пройти ще раз";
+    again.onclick = ()=>{ startQuiz(); render(); };
+    const toAlpha = document.createElement("button"); toAlpha.className="aq-btn-secondary"; toAlpha.textContent="До алфавіту";
+    toAlpha.onclick = ()=>{ state.tab="alphabet"; state.alphaView="grid"; render(); };
+    btnrow.appendChild(again); btnrow.appendChild(toAlpha);
+    root.appendChild(btnrow);
+  }
+
+  // ---------- root render ----------
+  function render(){
+    root.innerHTML = "";
+    root.dataset.theme = state.theme;
+    renderThemeToggle();
+    renderHeader();
+    renderTabs();
+    if(state.tab==="theory"){
+      if(state.theoryView==="list") renderTheoryList(); else renderTheoryArticle();
+    } else if(state.tab==="alphabet"){
+      if(state.alphaView==="grid") renderAlphaGrid(); else renderAlphaDetail();
+    } else if(state.tab==="quiz"){
+      if(state.quizQueue.length===0) startQuiz();
+      renderQuiz();
+    }
+  }
+
+  render();
+})();</script>
+</body>
+</html>
