@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://late-art-49a0.aptem484.workers.dev; object-src 'none'; base-uri 'none'; form-action 'none';">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <script>
   // GitHub Pages не дає підмінити HTTP-заголовок X-Frame-Options чи
@@ -137,6 +137,20 @@ body:has(.aq-root[data-theme="dark"]){ background:#141A24; }
 .aq-dict-empty{ text-align:center; color:var(--muted); padding:20px 0; font-family:"Helvetica Neue",Arial,sans-serif; }
 .aq-dict-count{ font-family:"Helvetica Neue",Arial,sans-serif; font-size:12.5px; color:var(--muted); margin-top:12px; text-align:right; }
 .aq-dict-speak{ background:none; border:none; cursor:pointer; color:var(--navy); font-size:15px; padding:0; }
+/* ---- word check (Glosbe proxy) ---- */
+.aq-check{ font-family:"Helvetica Neue",Arial,sans-serif; background:var(--card); border:1px solid var(--line); border-left:4px solid var(--gold); padding:14px 16px; margin-bottom:18px; }
+.aq-check-label{ font-size:13px; color:var(--muted); margin-bottom:8px; }
+.aq-check-row{ display:flex; gap:8px; flex-wrap:wrap; }
+.aq-check-input{ flex:1 1 160px; font-family:inherit; font-size:14.5px; padding:10px 12px; border:1px solid var(--line); background:var(--paper); color:var(--ink); }
+.aq-check-input:focus{ outline:none; border-color:var(--navy); }
+.aq-check-btn{ font-family:inherit; font-size:13.5px; background:var(--navy-solid); color:#fff; border:none; padding:10px 16px; cursor:pointer; white-space:nowrap; }
+.aq-check-btn:hover{ opacity:.9; }
+.aq-check-btn:disabled{ opacity:.5; cursor:default; }
+.aq-check-result{ margin-top:12px; font-size:14px; }
+.aq-check-result.ok{ color:var(--good); }
+.aq-check-result.bad{ color:var(--bad); }
+.aq-check-list{ margin-top:8px; display:flex; flex-wrap:wrap; gap:6px; }
+.aq-check-chip{ background:var(--good-bg); color:var(--good); border:1px solid var(--good); border-radius:3px; padding:4px 9px; font-size:13.5px; }
 </style>
 </head>
 <body>
@@ -572,8 +586,79 @@ body:has(.aq-root[data-theme="dark"]){ background:#141A24; }
     root.appendChild(nav);
   }
 
+  // ---------- WORD CHECK (local Glosbe proxy) ----------
+  // Локально (запущено через glosbe_server.py / Запустити Arabic.vbs) — свій сервер на localhost.
+  // На GitHub Pages (чи будь-якому іншому статичному хостингу) свого сервера немає,
+  // тож використовується Cloudflare Worker (див. cloudflare-worker.js) — заповніть
+  // WORKER_URL своєю адресою після розгортання воркера.
+  const WORKER_URL = "https://late-art-49a0.aptem484.workers.dev/api/check";
+  const isLocal = ["localhost","127.0.0.1"].includes(location.hostname);
+  const CHECK_API = isLocal ? "/api/check" : WORKER_URL;
+  function renderCheckPanel(){
+    const box = document.createElement("div"); box.className="aq-check";
+    const label = document.createElement("div"); label.className="aq-check-label";
+    label.textContent = "Перевірити слово через онлайн-словник (Glosbe) — арабською чи українською:";
+    box.appendChild(label);
+
+    const row = document.createElement("div"); row.className="aq-check-row";
+    const input = document.createElement("input"); input.className="aq-check-input"; input.type="text";
+    input.placeholder = "напр. كتاب або книга";
+    input.dir = "auto";
+    const btn = document.createElement("button"); btn.className="aq-check-btn"; btn.textContent="Перевірити";
+    row.appendChild(input); row.appendChild(btn);
+    box.appendChild(row);
+
+    const result = document.createElement("div"); result.className="aq-check-result";
+    box.appendChild(result);
+
+    async function runCheck(){
+      const word = input.value.trim();
+      if(!word) return;
+      btn.disabled = true; btn.textContent = "Перевірка...";
+      result.className = "aq-check-result";
+      result.textContent = "";
+      if(!isLocal && CHECK_API.includes("YOUR-SUBDOMAIN")){
+        result.classList.add("bad");
+        result.textContent = "Перевірку ще не налаштовано: розгорніть cloudflare-worker.js і впишіть його адресу в WORKER_URL.";
+        btn.disabled = false; btn.textContent = "Перевірити";
+        return;
+      }
+      try{
+        const res = await fetch(`${CHECK_API}?word=${encodeURIComponent(word)}`);
+        if(!res.ok) throw new Error("Сервер повернув помилку " + res.status);
+        const data = await res.json();
+        if(data.error) throw new Error(data.error);
+
+        if(data.found){
+          result.classList.add("ok");
+          result.textContent = `✓ Слово знайдено в словнику (${data.source} → ${data.target}):`;
+          const list = document.createElement("div"); list.className="aq-check-list";
+          data.translations.forEach(t=>{
+            const chip = document.createElement("span"); chip.className="aq-check-chip";
+            chip.textContent = t.text;
+            list.appendChild(chip);
+          });
+          result.appendChild(list);
+        } else {
+          result.classList.add("bad");
+          result.textContent = "✗ Такого слова не знайдено в онлайн-словнику.";
+        }
+      } catch(e){
+        result.classList.add("bad");
+        result.textContent = "Помилка перевірки: " + e.message + " (переконайтеся, що запущено glosbe_server.py і сторінку відкрито через http://localhost:8765/)";
+      } finally {
+        btn.disabled = false; btn.textContent = "Перевірити";
+      }
+    }
+    btn.onclick = runCheck;
+    input.addEventListener("keydown", (e)=>{ if(e.key==="Enter") runCheck(); });
+
+    root.appendChild(box);
+  }
+
   // ---------- DICTIONARY views ----------
   function renderDictList(){
+    renderCheckPanel();
     DICT.forEach(cat=>{
       const tile = document.createElement("button"); tile.className="aq-dict-tile";
       tile.innerHTML = `<div class="aq-dict-tile-name">${cat.label}</div><div class="aq-dict-tile-count">${cat.items.length} слів</div>`;
@@ -586,6 +671,8 @@ body:has(.aq-root[data-theme="dark"]){ background:#141A24; }
     const back = document.createElement("button"); back.className="aq-back"; back.textContent="← Категорії";
     back.onclick = ()=>{ state.dictView="list"; render(); };
     root.appendChild(back);
+
+    renderCheckPanel();
 
     const search = document.createElement("input"); search.className="aq-search"; search.type="text";
     search.placeholder = "Пошук за арабською, транслітерацією чи перекладом...";
